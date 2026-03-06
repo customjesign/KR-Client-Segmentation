@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClassIn 온라인 고객 SOP</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f4f2ed; --ink: #181612; --muted: #8a8680;
+  --surface: #ffffff; --surface2: #f0ede8;
+  --lv1: #1d4ed8; --lv2: #0369a1; --lv3: #6d28d9;
+  --accent: #f59e0b; --green: #059669;
+}
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Pretendard', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  flex-shrink: 0;
+  padding: 36px 36px 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 2.5px solid var(--ink);
+}
+.page-header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(26px, 3.5vw, 44px);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.page-header h1 em { color: var(--lv1); font-style: normal; }
+.header-meta { font-size: 11px; color: var(--muted); text-align: right; line-height: 1.9; }
+.header-meta strong { color: var(--ink); font-weight: 700; }
+
+/* ── SCROLL CONTAINER ── */
+.scroll-wrap {
+  flex: 1;
+  overflow: auto;
+  padding: 16px 36px 0;
+}
+
+/* ── TABLE ── */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 10px;
+  table-layout: fixed;
+}
+col.c-lv   { width: 175px; }
+col.c-cell { min-width: 200px; }
+
+/* ── STICKY COLUMN HEADERS (thead - sticks to top) ── */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding-bottom: 6px;
+  background: var(--bg);
+}
+thead th:first-child { z-index: 40; }
+
+/* ── COLUMN COLOR SYSTEM ── */
+:root {
+  --c-status:  #2563eb; /* 고객 현황  — 블루    */
+  --c-feature: #0891b2; /* 주요 기능  — 청록    */
+  --c-upsell:  #059669; /* 업셀 전략  — 초록    */
+  --c-pkg:     #d97706; /* 추천 PKG   — 앰버    */
+}
+
+.col-label {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; font-weight: 800;
+  padding: 9px 14px; border-radius: 8px;
+  white-space: nowrap; color: #fff;
+  border-left: none;
+}
+.col-label .ci { font-size: 15px; line-height: 1; }
+.col-label.status  { background: var(--c-status); }
+.col-label.feature { background: var(--c-feature); }
+.col-label.hl      { background: var(--c-upsell); }
+.col-label.pk      { background: var(--c-pkg); }
+.col-label.blank   { background: transparent; }
+
+/* ── CONTENT CELLS ── */
+td.cell {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 16px 18px;
+  border-top: 3px solid var(--color, #ccc);
+  vertical-align: top;
+}
+td.cell.status  { --color: var(--c-status); }
+td.cell.feature { --color: var(--c-feature); }
+td.cell.upsell  { --color: var(--c-upsell); }
+td.cell.pkg     { --color: var(--c-pkg); }
+
+/* ── STICKY ROW HEADERS (left column - sticks to left) ── */
+td.cell-lv {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: #2a2a2a;
+  border-radius: 12px;
+  padding: 20px 18px;
+  vertical-align: middle;
+  overflow: hidden;
+  min-width: 175px;
+}
+td.cell-lv::after {
+  content: attr(data-n);
+  position: absolute; right: -12px; bottom: -20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 120px; color: rgba(255,255,255,0.1);
+  line-height: 1; pointer-events: none;
+}
+.lv-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 10px; width: fit-content;
+}
+.lv-name { font-size: 17px; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 6px; }
+.lv-sub  { font-size: 10px; color: rgba(255,255,255,0.38); font-weight: 300; line-height: 1.55; }
+.sp-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(245,158,11,0.2); border: 1px solid rgba(245,158,11,0.4);
+  border-radius: 4px; padding: 2px 7px;
+  font-size: 9px; font-weight: 700; color: var(--accent);
+  margin-top: 7px; width: fit-content;
+}
+
+/* ── CONTENT CELLS ── */
+td.cell {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 16px 18px;
+  border-top: 3px solid var(--color, #ccc);
+  vertical-align: top;
+}
+td.cell.upsell { --color: var(--green); }
+td.cell.pkg    { --color: var(--accent); }
+
+.kp {
+  border-radius: 6px; padding: 6px 10px; margin-bottom: 10px;
+  font-size: 10.5px; font-weight: 700; line-height: 1.5;
+}
+
+.il { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.il li { display: flex; align-items: flex-start; gap: 7px; font-size: 11.5px; color: #3a3730; line-height: 1.55; }
+.il li .d { width: 5px; height: 5px; border-radius: 50%; background: var(--color, #999); margin-top: 7px; flex-shrink: 0; }
+.il li .a { color: var(--color, #999); font-weight: 700; font-size: 11px; margin-top: 1px; flex-shrink: 0; }
+
+.ph { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80px; gap: 6px; opacity: 0.4; }
+.ph .phi { font-size: 22px; }
+.ph .pht { font-size: 10px; color: var(--muted); font-weight: 500; }
+
+/* ── PKG LABELS ── */
+.pkg-section { display: flex; flex-direction: column; gap: 10px; }
+.pkg-group { display: flex; flex-direction: column; gap: 6px; }
+.pkg-label {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 9px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 2px 9px; border-radius: 4px; width: fit-content;
+}
+.pkg-label.sw { background: rgba(37,99,235,0.12); color: #1d4ed8; border: 1px solid rgba(37,99,235,0.25); }
+.pkg-label.hw { background: rgba(220,38,38,0.1);  color: #b91c1c; border: 1px solid rgba(220,38,38,0.25); }
+.pkg-items { list-style: none; display: flex; flex-direction: column; gap: 6px; padding-left: 2px; }
+.pkg-items li { display: flex; align-items: flex-start; gap: 7px; font-size: 11.5px; color: #3a3730; line-height: 1.55; }
+.pkg-items li::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--c-pkg); flex-shrink: 0; margin-top: 7px; }
+.pkg-divider { height: 1px; background: rgba(0,0,0,0.06); margin: 2px 0; }
+
+/* ── GROWTH BAR ── */
+.growth-wrap {
+  flex-shrink: 0;
+  padding: 14px 36px 0;
+}
+.growth-bar {
+  background: var(--ink); border-radius: 12px;
+  padding: 18px 26px; display: flex; align-items: center; gap: 0;
+}
+.gbt {
+  font-family: 'Bebas Neue', sans-serif; font-size: 14px;
+  letter-spacing: 0.1em; color: rgba(255,255,255,0.4);
+  white-space: nowrap; margin-right: 24px; line-height: 1.3;
+}
+.gsteps { display: flex; align-items: center; flex: 1; }
+.gs { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 4px; }
+.gs .gl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
+.gs .gt { font-size: 11px; font-weight: 700; color: #fff; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 4px 10px; white-space: nowrap; }
+.gs .gt.c1 { background:rgba(29,78,216,0.3);  border-color:rgba(29,78,216,0.5);  color:#93c5fd; }
+.gs .gt.c2 { background:rgba(3,105,161,0.3);  border-color:rgba(3,105,161,0.5);  color:#7dd3fc; }
+.gs .gt.c3 { background:rgba(109,40,217,0.3); border-color:rgba(109,40,217,0.5); color:#c4b5fd; }
+.gs .gt.cx { background:rgba(245,158,11,0.2); border-color:rgba(245,158,11,0.4); color:#fcd34d; }
+.ga { color: rgba(255,255,255,0.2); font-size: 13px; padding: 0 4px; margin-top: 16px; }
+
+/* ── FOOTER ── */
+.footer {
+  flex-shrink: 0;
+  padding: 12px 36px 32px;
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--muted);
+}
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)} }
+tbody tr { animation: fadeUp 0.5s ease both; }
+tbody tr:nth-child(1){animation-delay:0.1s}
+tbody tr:nth-child(2){animation-delay:0.2s}
+tbody tr:nth-child(3){animation-delay:0.3s}
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">ClassIn Korea · Sales SOP</div>
+    <h1>온라인 고객 <em>세그먼트</em> 프레임워크</h1>
+  </div>
+  <div class="header-meta">
+    <strong>대상</strong> 영업/CS 매니저<br>
+    <strong>목적</strong> 고객 레벨 진단 → 업셀 전략 실행<br>
+    <strong>구분</strong> Online Segment v1.0
+  </div>
+</div>
+
+<!-- SCROLLABLE TABLE -->
+<div class="scroll-wrap">
+<table>
+  <colgroup>
+    <col class="c-lv">
+    <col class="c-cell"><col class="c-cell"><col class="c-cell"><col class="c-cell">
+  </colgroup>
+  <thead>
+    <tr>
+      <th><div class="col-label blank"></div></th>
+      <th><div class="col-label status"><span class="ci">👤</span>고객 현황</div></th>
+      <th><div class="col-label feature"><span class="ci">⚙️</span>주요 사용 기능</div></th>
+      <th><div class="col-label hl"><span class="ci">📈</span>매니저 업셀 전략</div></th>
+      <th><div class="col-label pk"><span class="ci">📦</span>추천 패키지 (PKG)</div></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    <!-- ══ LV1 ══ -->
+    <tr>
+      <td class="cell-lv" data-n="1">
+        <div class="lv-badge" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)">
+          <span style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0"></span>
+          <span style="color:rgba(255,255,255,0.6)">LEVEL 1</span>
+        </div>
+        <div class="lv-name">수업만 할게요</div>
+        <div class="lv-sub">온라인 라이브 수업 중심 사용<br>LMS 기능 미도입 단계</div>
+      </td>
+      <td class="cell status">
+        <ul class="il">
+          <li><span class="d"></span>ClassIn을 온라인 라이브 수업 도구로 활용 중</li>
+          <li><span class="d"></span>과제·자료 관리는 카카오톡·드라이브 등 외부 채널에 의존</li>
+          <li><span class="d"></span>LMS 기능의 존재 인지 또는 도입 필요성이 낮은 상태</li>
+          <li><span class="d"></span>소규모 온라인 학원 또는 개인 강사 유형 다수</li>
+        </ul>
+      </td>
+      <td class="cell feature">
+        <ul class="il">
+          <li><span class="d"></span>온라인 라이브 수업 진행</li>
+          <li><span class="d"></span>화면 공유 및 판서 기반 수업 운영</li>
+          <li><span class="d"></span>기본 출석 확인</li>
+          <li><span class="d"></span>수업 녹화 또는 판서 저장 <span style="color:var(--muted);font-size:10px">(선택)</span></li>
+        </ul>
+      </td>
+      <td class="cell upsell">
+        <div class="kp" style="background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);color:#065f46">
+          ★ LMS를 '새 기능'이 아닌 '운영 자동화 도구'로 포지셔닝
+        </div>
+        <ul class="il">
+          <li><span class="d"></span>현재 운영 방식의 불편함을 파악하고 LMS 필요성 인식 유도</li>
+          <li><span class="d"></span>과제 제출·자료 공유 등 단일 기능부터 단계적으로 도입</li>
+          <li><span class="d"></span>LMS 활용 성공 사례 시연 및 초기 세팅 지원</li>
+          <li><span class="d"></span>사용 활성화를 통한 충전 소진 → 재충전 사이클 형성</li>
+        </ul>
+      </td>
+      <td class="cell pkg">
+        <div class="pkg-section">
+          <div class="pkg-group">
+            <div class="pkg-label sw">💻 SW</div>
+            <ul class="pkg-items">
+              <li>충전제 — 5,000 CNY+</li>
+              <li>구독제 — Individual / Standard / Plus 중 선택</li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ══ LV2 ══ -->
+    <tr>
+      <td class="cell-lv" data-n="2">
+        <div class="lv-badge" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)">
+          <span style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0"></span>
+          <span style="color:rgba(255,255,255,0.6)">LEVEL 2</span>
+        </div>
+        <div class="lv-name">관리도 할게요</div>
+        <div class="lv-sub">온라인 라이브 수업<br>+ LMS 학습 관리 활용 단계</div>
+      </td>
+      <td class="cell status">
+        <ul class="il">
+          <li><span class="d"></span>온라인 라이브 수업 운영이 안정화된 상태</li>
+          <li><span class="d"></span>LMS를 활용한 과제·출결·자료 관리 병행 중</li>
+          <li><span class="d"></span>플랫폼 주요 기능에 대한 이해도 및 활용 경험 보유</li>
+          <li><span class="d"></span>수강생 관리와 학습 운영을 체계적으로 구축 중</li>
+        </ul>
+      </td>
+      <td class="cell feature">
+        <ul class="il">
+          <li><span class="d"></span>온라인 라이브 수업 + 녹화</li>
+          <li><span class="d"></span>LMS 기반 학습 관리</li>
+          <li><span class="d"></span>출결 처리 및 학습 이력 기록</li>
+          <li><span class="d"></span>수강생 대상 공지 및 커뮤니케이션</li>
+        </ul>
+      </td>
+      <td class="cell upsell">
+        <ul class="il">
+          <li><span class="d"></span>LMS 심화 활용 제안 (과제 → 성적 관리 → 학습 데이터 분석)</li>
+          <li><span class="d"></span>수강생 모집 및 운영 효율화 노하우 공유</li>
+          <li><span class="d"></span>성공 사례 발굴 및 레퍼런스 고객으로 전환</li>
+          <li><span class="d"></span>하드웨어 도입 또는 상위 기능 확장 자연스럽게 제안</li>
+        </ul>
+      </td>
+      <td class="cell pkg">
+        <div class="pkg-section">
+          <div class="pkg-group">
+            <div class="pkg-label sw">💻 SW</div>
+            <ul class="pkg-items">
+              <li>기존 사용하던 요금제 유지</li>
+              <li>부가 서비스 — 스토리지 및 SMS 서비스 제언</li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+    <!-- ══ LV3 ══ -->
+    <tr>
+      <td class="cell-lv" data-n="3">
+        <div class="lv-badge" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2)">
+          <span style="width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.5);flex-shrink:0"></span>
+          <span style="color:rgba(255,255,255,0.6)">LEVEL 3 · 확장형</span>
+        </div>
+        <div class="lv-name">고도화 해볼게요</div>
+        <div class="lv-sub">온라인 + LMS<br>+ 하드웨어 확장 단계</div>
+        <div class="sp-tag">⭐ 특수 고객군</div>
+      </td>
+      <td class="cell status">
+        <div class="kp" style="background:rgba(109,40,217,0.07);border:1px solid rgba(109,40,217,0.18);color:#5b21b6">
+          ★ 온라인 수업 고도화 단계
+        </div>
+        <ul class="il">
+          <li><span class="d"></span>온라인 수업 및 LMS 운영이 안정적으로 정착된 상태</li>
+          <li><span class="d"></span>수업 품질 향상을 목적으로 하드웨어 장비 일부 도입</li>
+          <li><span class="d"></span>전문적인 온라인 수업 환경 구축에 적극적인 의지 보유</li>
+          <li><span class="d"></span>스튜디오형 강의 또는 고품질 콘텐츠 제작 가능성 높음</li>
+        </ul>
+      </td>
+      <td class="cell feature">
+        <ul class="il">
+          <li><span class="d"></span>온라인 라이브 수업 + 녹화</li>
+          <li><span class="d"></span>LMS 기반 학습 관리</li>
+          <li><span class="d"></span>HW 장비 기반 (전자칠판 등) 수업 진행 및 녹화</li>
+        </ul>
+      </td>
+      <td class="cell upsell">
+        <ul class="il">
+          <li><span class="d"></span>수업 녹화 VOD 제작 → LMS 내 콘텐츠 판매 구조 구축 제안</li>
+          <li><span class="d"></span>전용 스튜디오 구성을 위한 프리미엄 HW 패키지 업그레이드</li>
+          <li><span class="d"></span>온라인 전용 운영에서 하이브리드 학원 모델로의 전환 제안</li>
+        </ul>
+      </td>
+      <td class="cell pkg">
+        <div class="pkg-section">
+          <div class="pkg-group">
+            <div class="pkg-label sw">💻 SW</div>
+            <ul class="pkg-items">
+              <li>기존 사용하던 요금제 유지</li>
+            </ul>
+          </div>
+          <div class="pkg-divider"></div>
+          <div class="pkg-group">
+            <div class="pkg-label hw">🖥 HW</div>
+            <ul class="pkg-items">
+              <li>촬영용 스튜디오 패키지 — 전자칠판 (75") + 카메라 (T1)</li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+
+  </tbody>
+</table>
+</div>
+
+<!-- GROWTH PATH (하단 고정) -->
+<div class="growth-wrap">
+  <div class="growth-bar">
+    <div class="gbt">GROWTH<br>PATH</div>
+    <div class="gsteps">
+      <div class="gs"><div class="gl">Entry</div><div class="gt c1">🎯 LV1 진입</div></div>
+      <div class="ga">▶</div>
+      <div class="gs"><div class="gl">Activation</div><div class="gt">LMS 교육</div></div>
+      <div class="ga">▶</div>
+      <div class="gs"><div class="gl">Growth</div><div class="gt c2">📚 LV2 활성화</div></div>
+      <div class="ga">▶</div>
+      <div class="gs"><div class="gl">Expansion</div><div class="gt">HW 도입</div></div>
+      <div class="ga">▶</div>
+      <div class="gs"><div class="gl">Premium</div><div class="gt c3">⭐ LV3 고도화</div></div>
+      <div class="ga">▶</div>
+      <div class="gs"><div class="gl">Next Step</div><div class="gt cx">🏫 하이브리드</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>ClassIn Korea · 온라인 고객 세그먼트 SOP v1.0</span>
+  <span>📦 추천 PKG 내용 추후 업데이트 예정 · 다음: 오프라인/하이브리드 고객 프레임워크</span>
+</div>
+
+</body>
+</html>
